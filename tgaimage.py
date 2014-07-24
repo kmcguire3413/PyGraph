@@ -40,26 +40,37 @@ class TGAImage:
         self.bpp = 24
         self.orientation = 0
         self.data = array.array('B', (255 for i in range(self.w * self.h * 3 * self.scale)))
+    '''
+        I am not sure if `put` and `putscaled` are named right,
+        because I feel like `put` should be `putscaled`.
+    '''
     def put(self, x, y, rgb):
-        x = x * self.scale
-        y = y * self.scale
-        self.putnoscale(x, y, rgb)
-    def putscaled(self, x, y, rgb):
-        x = x * self.scale
-        y = y * self.scale
+        x = int(x * self.scale)
+        y = int(y * self.scale)
         for _y in range(0, self.scale):
             for _x in range(0, self.scale):
                 self.putnoscale(x + _x, y + _y, rgb)
+    def putboxoutline(self, x0, y0, x1, y1, rgb):
+        x0 = int(x0 * self.scale)
+        y0 = int(y0 * self.scale)
+        x1 = int(x1 * self.scale)
+        y1 = int(y1 * self.scale)
+        for y in (y0, y1):
+            for x in range(x0, x1):
+                self.putnoscale(x, y, rgb)
+        for x in (x0, x1):
+            for y in range(y0, y1):
+                self.putnoscale(x, y, rgb)
     def putnoscale(self, x, y, rgb):
         y = (self.h - 1) - y
         self.data[(y * self.w + x) * 3 + 0] = rgb[2]
         self.data[(y * self.w + x) * 3 + 1] = rgb[1]
         self.data[(y * self.w + x) * 3 + 2] = rgb[0]
     def putline(self, x0, y0, x1, y1, color):
-        x0 = x0 * self.scale
-        y0 = y0 * self.scale
-        x1 = x1 * self.scale
-        y1 = y1 * self.scale
+        x0 = int(x0 * self.scale)
+        y0 = int(y0 * self.scale)
+        x1 = int(x1 * self.scale)
+        y1 = int(y1 * self.scale)
 
         steep = abs(y1 - y0) > abs(x1 - x0)
 

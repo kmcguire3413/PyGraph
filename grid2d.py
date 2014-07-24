@@ -40,12 +40,6 @@ import random
 
 from tgaimage import TGAImage
 
-def grid_fillrect(grid, w, h, rect, val):
-        sx, sy, ex, ey = rect
-        for y in range(sy, ey):
-            for x in range(sx, ex):
-                grid[y * w + x] = val
-
 def solve(grid, w, h, toohigh, start, end):
     # build rectangle portals across grid
     rportals = []
@@ -81,11 +75,9 @@ def solve(grid, w, h, toohigh, start, end):
                 # gill area and mark rect's index in rportals
                 # we will use this later when building an actual
                 # graph of the portals
-                #grid_fillrect(used, w, h, rect, len(rportals))
                 for __y in range(y, ny):
                     for __x in range(x, nx):
                         used[__y * w + __x] = len(rportals)
-
 
                 rportals.append(rect)
                 x = nx
@@ -148,13 +140,13 @@ def solve(grid, w, h, toohigh, start, end):
                 ivp = ivp + 1
     tga.save('passable.tga')
 
-    tga = TGAImage(w, h, 3)
+    tga = TGAImage(w, h, 12)
     # first render impassable areas
     ivp = 0
     for y in range(0, h):
         for x in range(0, w):
             if grid[y * w + x] >= toohigh:
-                tga.putscaled(x, y, (190, 190, 190))
+                tga.put(x, y, (190, 190, 190))
                 ivp = ivp + 1
 
     pc = len(grid) - ivp
@@ -175,15 +167,17 @@ def solve(grid, w, h, toohigh, start, end):
 
         sx, sy, ex, ey = rect
         # calculate our center
-        cx = sx + ((ex - sx) // 2)
-        cy = sy + ((ey - sy) // 2)
+        cx = sx + ((ex - sx) / 2)
+        cy = sy + ((ey - sy) / 2)
+
+        tga.putboxoutline(sx, sy, ex, ey, (90, rc, 90))
 
         # iterate through border nodes
         rc = (rc + 40) & 0xff
         for bn in bnodes:
             bsx, bsy, bex, bey = bn[0]
-            bcx = bsx + ((bex - bsx) // 2)
-            bcy = bsy + ((bey - bsy) // 2)            
+            bcx = bsx + ((bex - bsx) / 2)
+            bcy = bsy + ((bey - bsy) / 2)            
             # draw line denoting connection (portal)
             tga.putline(cx, cy, bcx, bcy, (rc, 90, 90))
 
@@ -195,11 +189,12 @@ def main():
 
     # create the grid with random values
     random.seed(1029382)
+
+    print('generating grid..')
     grid = array.array('f', (random.random() for x in range(0, int(w*h))))
 
+    print('solving..')
     solve(grid, w, h, 0.8, None, None)
-
-
 
 
 main()

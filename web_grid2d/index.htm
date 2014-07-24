@@ -35,8 +35,15 @@
     a path. You however still need to solve the problem in more detail for it to be
     actually usable but that can be done progressively in real time if desired by simply
     using the less detailed rectangular graph to plot the coarse path.</p>
+
+    <p>You can see the mountains (unpassable blocks) represented by light gray. You can
+    see the rectangles represented by outlines and then the paths represented by lines
+    going from the center of each rectangle to the next. You should notice that each
+    two rectangles connected by a line are accessible to each other from any point within
+    each other. This is a strong property that makes pathing inside the rectangles much
+    easier.</p>
     
-    <img src="graph_scaled.png"/>
+    <img src="graph_scaled2.png"/>
 
     <h3> Algorithm Details </h3>
 
